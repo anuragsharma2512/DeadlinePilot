@@ -2,10 +2,10 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { createClient } = require('@libsql/client');
+const { getDatabaseConfig } = require('./config');
 
 async function init() {
-  const url = process.env.DATABASE_URL || 'file:lifesaver.db';
-  const authToken = process.env.DATABASE_AUTH_TOKEN;
+  const { url, authToken } = getDatabaseConfig();
   
   console.log(`Connecting to database at ${url}...`);
   const client = createClient({ url, authToken });
@@ -27,4 +27,8 @@ async function init() {
   }
 }
 
-init();
+if (require.main === module) {
+  init();
+}
+
+module.exports = init;

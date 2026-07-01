@@ -320,7 +320,9 @@ Gemini returns errors:
 ## Production Notes
 
 - Replace the development `JWT_SECRET` with a strong random value
-- Use a managed database or Turso/libSQL URL for production
+- For a single VPS, SQLite/libSQL is fine if the `server/lifesaver.db` file is stored on persistent disk and the server process has write permission to the `server` directory
+- The backend runs `server/db/schema.sql` on startup, so missing tables are created automatically before the API starts
+- Use a managed database or Turso/libSQL URL for production if you deploy multiple backend instances, need automated backups, or do not want to manage a database file on the VPS
 - Set `CLIENT_URL` to the deployed frontend URL
 - Store secrets in the host platform's environment variable manager
 - Keep `.env` files out of Git

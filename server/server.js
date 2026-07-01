@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const cron = require('node-cron');
 const db = require('./db/client');
+const initDatabase = require('./db/init');
+const { getDatabaseConfig } = require('./db/config');
 const { router: authRouter } = require('./routes/auth'); // Wait, we exported default router or { router }? Let's check.
 // Ah, in auth.js we did module.exports = router;
 // In tasks.js we did module.exports = router;
@@ -108,10 +110,19 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`==================================================`);
-  console.log(`  LAST MINUTE LIFESAVER BACKEND RUNNING ON PORT ${PORT}`);
-  console.log(`  Database URL: ${process.env.DATABASE_URL || 'file:lifesaver.db'}`);
-  console.log(`  Allowed Origin: ${allowedOrigins.join(', ')}`);
-  console.log(`==================================================`);
+async function startServer() {
+  await initDatabase();
+
+  app.listen(PORT, () => {
+    console.log(`==================================================`);
+    console.log(`  LAST MINUTE LIFESAVER BACKEND RUNNING ON PORT ${PORT}`);
+    console.log(`  Database URL: ${getDatabaseConfig().url}`);
+    console.log(`  Allowed Origin: ${allowedOrigins.join(', ')}`);
+    console.log(`==================================================`);
+  });
+}
+
+startServer().catch((error) => {
+  console.error('[STARTUP ERROR]', error);
+  process.exit(1);
 });
