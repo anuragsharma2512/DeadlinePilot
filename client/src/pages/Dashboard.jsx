@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import api, { API_URL } from '../api';
 import { clearAuth, getUser, getToken } from '../utils/auth';
 import TaskInput from '../components/TaskInput';
 import TaskList from '../components/TaskList';
@@ -307,7 +307,7 @@ export default function Dashboard() {
     const token = getToken();
     if (!token) return;
 
-    const sseUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/ai/coach/stream?token=${token}`;
+    const sseUrl = `${API_URL}/ai/coach/stream?token=${token}`;
     
     try {
       const source = new EventSource(sseUrl);
